@@ -1,0 +1,7 @@
+x64/
+.vs/
+Data/
+build/
+buildLinux/
+CMakeLists.txt
+SimAg_SolutionToLecture.py

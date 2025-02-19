@@ -1,0 +1,130 @@
+set(MY_PROJECT_NAME SimAg)
+cmake_minimum_required(VERSION 3.10)
+
+# specify the C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# set the project name
+project(${MY_PROJECT_NAME})
+
+# Windows
+if(WIN32)
+# Paths are using '/' not '\' !
+  set(PATH_TO_GLFW_HEADER C:/DevelopmentFHNW25/SimAgFS25/glfw-3.4/include)
+  set(PATH_TO_GLFW_LIB C:/DevelopmentFHNW25/SimAgFS25/glfw-3.4/build/src/Release)
+  set(GLFW_LIB_NAME glfw3.lib)
+  set(ADDITIONAL_LIBS )
+endif()
+
+# Linux
+if(UNIX AND NOT APPLE)
+  add_compile_definitions(GLFW_INCLUDE_NONE)
+  set(PATH_TO_GLFW_HEADER ~/Downloads/glfw-3.4/include)
+  set(PATH_TO_GLFW_LIB ~/Downloads/glfw-3.4/src)
+  set(GLFW_LIB_NAME libglfw3.a)
+  set(ADDITIONAL_LIBS dl m X11 pthread)
+  #set(ADDITIONAL_LIBS dl m GL X11 pthread)
+
+# Enable any client with lsp (vim, emacs, vscode etc)
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# debug
+#  set(CMAKE_CXX_FLAGS "-g -Wall -Wextra")
+# optimization
+#  set(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -Wno-unused-function -Wno-unused-but-set-variable")
+  
+# USE GCCmake 
+#  set(CMAKE_C_COMPILER "/usr/bin/gcc")
+#  set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+
+# USE CLANG
+#  set(PATH_TO_GLFW_LIB ~/Downloads/glfwClang/glfw-3.4/src)
+#  set(ADDITIONAL_LIBS dl m X11 pthread stdc++)
+#  set(CMAKE_C_COMPILER "/usr/bin/clang")
+#  set(CMAKE_CXX_COMPILER "/usr/bin/clang")
+endif()
+  
+
+# MacOSX
+if (APPLE)
+	message ("-- Compiling on Mac OSX")
+	set(PATH_TO_GLFW_HEADER ~/Downloads/glfw-3.4.bin.MACOS/include)
+	set(PATH_TO_GLFW_LIB ~/Downloads/glfw-3.4.bin.MACOS/lib-universal)
+	set(GLFW_LIB_NAME libglfw3.a)
+	set(ADDITIONAL_LIBS )
+
+	find_library(COCOA_LIBRARY Cocoa)
+	find_library(OPENGL_LIBRARY OpenGL)
+	find_library(IOKIT_LIBRARY IOKit)
+	find_library(COREVIDEO_LIBRARY CoreVideo)
+	set(ADDITIONAL_LIBS ${COCOA_LIBRARY} ${OPENGL_LIBRARY} ${IOKIT_LIBRARY} ${COREVIDEO_LIBRARY})
+    # Disable Warnings in external code (Clang)	
+	set(CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
+endif()
+
+# add directories
+include_directories(./external ${PATH_TO_GLFW_HEADER})
+link_directories(${PATH_TO_GLFW_LIB})
+
+# add all files
+file(GLOB SRC_Main
+         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+         ${CMAKE_CURRENT_SOURCE_DIR}/Globals.h)
+
+file(GLOB_RECURSE SRC_Context
+         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}/Context/*.cpp
+         ${CMAKE_CURRENT_SOURCE_DIR}/Context/*.h)
+
+file(GLOB_RECURSE SRC_external
+         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}/external/*.cpp
+         ${CMAKE_CURRENT_SOURCE_DIR}/external/*.c
+         ${CMAKE_CURRENT_SOURCE_DIR}/external/*.h)
+
+file(GLOB_RECURSE SRC_Grid
+         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}/Grid/*.cpp
+         ${CMAKE_CURRENT_SOURCE_DIR}/Grid/*.h)
+
+file(GLOB_RECURSE SRC_Helper
+         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}/Helper/*.cpp
+         ${CMAKE_CURRENT_SOURCE_DIR}/Helper/*.h)
+
+file(GLOB_RECURSE SRC_Integrator
+         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}/Integrator/*.cpp
+         ${CMAKE_CURRENT_SOURCE_DIR}/Integrator/*.h)
+
+file(GLOB_RECURSE SRC_ParticleSystem
+         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}/ParticleSystem/*.cpp
+         ${CMAKE_CURRENT_SOURCE_DIR}/ParticleSystem/*.h)
+
+file(GLOB_RECURSE SRC_Tasks
+         RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+         ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/*.cpp
+         ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/*.h)
+         
+source_group(Main      FILES ${SRC_Main})
+source_group(Context   FILES ${SRC_Context})
+source_group(external   FILES ${SRC_external})
+source_group(Grid   FILES ${SRC_Grid})
+source_group(Helper   FILES ${SRC_Helper})
+source_group(Integrator   FILES ${SRC_Integrator})
+source_group(ParticleSystem   FILES ${SRC_ParticleSystem})
+source_group(Tasks   FILES ${SRC_Tasks})
+
+# add the executable
+add_executable(${MY_PROJECT_NAME} ${SRC_Main} ${SRC_Context} ${SRC_external} ${SRC_Grid} ${SRC_Helper} ${SRC_Helper} ${SRC_ParticleSystem} ${SRC_Tasks} ${SRC_Integrator})
+
+target_link_libraries(${MY_PROJECT_NAME} ${GLFW_LIB_NAME} ${ADDITIONAL_LIBS})
+
+# enable multi threaded compilation in Visual Studio
+if(MSVC)
+ target_compile_options(${MY_PROJECT_NAME} PRIVATE "/MP")
+endif()
+
