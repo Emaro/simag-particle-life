@@ -83,7 +83,7 @@ if (APPLE)
         )
     set(PATH_TO_GLFW_HEADER "${GLFW_INSTALL_PREFIX}/include")
     set(PATH_TO_GLFW_LIB "${GLFW_INSTALL_PREFIX}/lib")
-    set(GLFW_LIB_NAME libglfw.3.3.dylib)
+    set(GLFW_LIB_NAME libglfw.3.4.dylib)
     set(ADDITIONAL_LIBS )
 
     find_library(COCOA_LIBRARY Cocoa)
