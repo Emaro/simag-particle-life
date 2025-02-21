@@ -59,6 +59,7 @@ void TaskRecursiveTree::imGui()
     ImGui::SliderFloat(paramName("angleLeft"), &angleLeft, -pi, pi);
     ImGui::SliderFloat(paramName("angleRight"), &angleRight, -pi, pi);
     ImGui::SliderFloat(paramName("step"), &step, 0.01f, 0.1f);
+    if (step < 0.0005f) step = 0.009f;
 }
 
 const char* TaskRecursiveTree::toString() const
