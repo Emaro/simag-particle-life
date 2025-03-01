@@ -24,7 +24,7 @@ Camera::Camera(glm::ivec2 const& sizeFramebuffer, glm::ivec2 const& sizeWindow)
     , m_floorY(0.0f)
     , m_bMirror(false)
 {
-    updateView();
+    // updateView();
 }
 
 Camera::~Camera()

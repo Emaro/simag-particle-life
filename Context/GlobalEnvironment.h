@@ -20,7 +20,7 @@ struct GlobalEnvironment
 	
 	static void init();
 
-	void createCameras(glm::ivec2 const& sizeFramebuffer, glm::ivec2 const& sizeWindow);
+	void createCameras(glm::ivec2 const sizeFramebuffer, glm::ivec2 const sizeWindow);
 	void updateCamera(float dt);
 	void switchCamera();
 };
