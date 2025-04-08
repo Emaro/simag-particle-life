@@ -60,7 +60,11 @@ protected:
 		glm::vec3& f = particleForce;
 		glm::vec3& n = collisionNormal;
 
-		// todo students
+		auto vn = n * glm::dot(n, v);
+		auto vt = v - vn;
+
+		v  -= vn * kn_normalFriction;
+		f  -= vt * kt_tangentialFriction;
 	}
 
 };

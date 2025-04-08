@@ -38,8 +38,17 @@ void CollisionPlane::handleCollisionByVelocity(ParticleSystem& ps, float kn_norm
         glm::vec3& v = vel[i];
         glm::vec3& f = forces[i];
 
-        // todo students
+        auto pq = p - planeP;
+        auto h = glm::dot(planeN, pq);
 
+        if (h >= 0) {
+            continue;
+        }
+
+        p += planeN * -h + eps;
+        v = glm::reflect(v, planeN);
+
+        handleFriction(v, f, planeN, kn_normalFriction, kt_tangentialFriction);
     }
 }
 
