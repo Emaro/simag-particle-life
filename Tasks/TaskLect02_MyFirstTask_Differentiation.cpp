@@ -26,9 +26,9 @@ float TaskLect02_MyFirstTask_Differentiation::myFunc(float x) const
 
 float TaskLect02_MyFirstTask_Differentiation::derivative(float x, float h) const
 {
-    // todo students
-    float result = 0.0f;
-    return result;
+    double a = myFunc(x - h);
+    double b = myFunc(x + h);
+    return (b - a) / (2 * h);
 }
 
 
@@ -67,10 +67,15 @@ void TaskLect02_MyFirstTask_Differentiation::draw() const
     // Plot derivative
     x = m_xMin;
     glColor4f(0.5f, 0.5f, 0.5f, 1);
-    if (m_plotDerivative)
+
+    while (m_plotDerivative && x < xMax)
     {
-        // todo students
+        float y = derivative(x, h);
+        glm::vec3 pos(x, y, 0);
+        Helper::drawPoint(pos);
+        x += dx;
     }
+    
 
     glColor4f(1.0f, 1.0f, 1.0f, 1);
     glPointSize(1.0f);
@@ -89,7 +94,15 @@ void TaskLect02_MyFirstTask_Differentiation::copyToParticleSystem0()
 
     // Add function as position & derivative as velocity to particlesystem 0
 
-    // todo students
+    while (x < xMax)
+    {
+        float y = myFunc(x);
+        float yh = derivative(x, h);
+        glm::vec3 pos(x, y, 0);
+        glm::vec3 vel(1, yh, 0);
+        particleSystem(0).add(pos, glm::normalize(vel));
+        x += dx;
+    }
 
 }
 
