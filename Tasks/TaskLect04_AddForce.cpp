@@ -16,7 +16,9 @@ void TaskLect04_AddForce::setForces()
 
     const glm::vec3 f = m_force;
 
-    float factor = m_divideByNumberOfSteps ? (1.0f / (float)gEnv->stateSim->dtFixedNoOfStepsPerFrame) : 1.0f;
+    float factor = m_divideByNumberOfSteps
+        ? (1.0f / (float)gEnv->stateSim->dtFixedNoOfStepsPerFrame)
+        : 1.0f;
 
     const bool bUseGlobalFriction = m_globalFriction > 0.0f;
     const bool bUseArtificialFriction = m_artificialFriction < 1.0f;
@@ -25,15 +27,29 @@ void TaskLect04_AddForce::setForces()
     {
         for (auto& it : ps.states())
         {
-            // todo students
+            it.force() += f * factor * it.mass();
         }
     }
     else
     {
         for (auto& it : ps.states())
         {
-            // todo students
+            it.force() += f * factor;
         }
+    }
+
+    if (bUseArtificialFriction)
+    {
+        for (auto& it : ps.states())
+        {
+            it.vel() *= m_artificialFriction;
+        }
+    }
+
+    if (bUseGlobalFriction)
+    {
+        for (auto& it : ps.states())
+            it.force() -= m_globalFriction * it.vel();
     }
 
 }
