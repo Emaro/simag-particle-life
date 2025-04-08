@@ -16,6 +16,15 @@ void TaskLect03_CarCollision::setForces()
     if (particleSystem(0).size() != 2) return;
 
     // todo students
+    auto p0 = particleSystem(0).particle(0);
+    auto p1 = particleSystem(0).particle(1);
+
+    if (p0.pos().x < p1.pos().x)
+        m_time += gEnv->stateSim->dt;
+    else {
+        p0.vel() = p1.vel() = glm::vec3(0);
+    }
+
 }
 
 void TaskLect03_CarCollision::doWork()
@@ -35,7 +44,8 @@ void TaskLect03_CarCollision::imGui()
 
         particleSystem(0).clear();
 
-        // todo students
+        particleSystem(0).add(glm::vec3(m_x0, 0, 0), glm::vec3(m_vel0, 0, 0), m_col0);
+        particleSystem(0).add(glm::vec3(m_x1, 0, 0), glm::vec3(m_vel1, 0, 0), m_col1);
     }
 
     ImGui::Separator();
