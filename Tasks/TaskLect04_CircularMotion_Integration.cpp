@@ -24,9 +24,9 @@ void TaskLect04_CircularMotion_Integration::setForces()
     auto& p0 = ps.particle(0); // Get particle 0
 
     // Add force in p0.force()...
+    p0.force() -= p0.pos();
 
     // todo students
-
 }
 
 void TaskLect04_CircularMotion_Integration::doWork() 
@@ -50,7 +50,7 @@ void TaskLect04_CircularMotion_Integration::imGui()
         ps.clear();
 
         // Circle
-        ps.add(glm::vec3(0, 0, 0), glm::vec4(1, 1, 1, 1));
+        ps.add(glm::vec3(1, 0, 0), glm::vec3(0, 1, 0), glm::vec4(1, 1, 1, 1));
         if (ps.size() != 1) { return; }
 
         auto& p0 = ps.particle(0); // Get particle 0
