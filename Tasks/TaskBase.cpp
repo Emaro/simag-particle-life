@@ -87,8 +87,10 @@ void TaskBase::imGui()
         std::cerr << "Test Button pressed\n"; // print to terminal
 
         // Add particle
-
-        // todo students
+        glm::vec3 pos(0, 0, 0);
+        glm::vec4 col(1.0f, 1.0f, 0.0f, 1.0f);
+        particleSystem(0).add(pos, col);
+        particleSystem(0).particleLast().vel() = glm::vec3(1.0f, -1.0f, 0.0f);
     }
     ImGui::Checkbox(paramName("TestCheckbox: Draw red line & Animate Colors"), &m_boolTest);
     ImGui::SliderFloat(paramName("TestSliderFloat"), &m_sliderValue, 0.0f, 1.0f);
