@@ -12,6 +12,14 @@
 
 namespace
 {
+    int getIdx(int x, int y, int nX, int nY) 
+     { 
+         if (x < 0) return -1; 
+         if (y < 0) return -1; 
+         if (x >= nX) return -1; 
+         if (y >= nY) return -1; 
+         return x + y * nX; 
+     } 
 }
 
 
@@ -79,13 +87,13 @@ void TaskLect05_Springs::generateScene1_rope()
     // Set first and last particle as static
     for (int i = -nMax; i <= nMax; i++)
     {
-        // todo students
+        addParticle(glm::vec3(i, 1, 0), i == -nMax || i == nMax && m_createBothEndsStatic);
     }
 
     // Add neighbors
     for (int i = -nMax; i < nMax; i++)
     {
-        // todo students
+        addNeighbor(nMax + i, nMax + i + 1);
     }
 
 }
@@ -142,7 +150,28 @@ void TaskLect05_Springs::generateScene3_cloth()
     // ==> thus, you don't have to take care of array-borders 
     // 
 
-    // todo students
+    for (int y = 0; y < nY; y++) { 
+        for (int x = 0; x < nX; x++) { 
+            addParticle(glm::vec3(x * scale, height, y * scale), y==0); 
+        } 
+    } 
+ 
+    for (int y = 0; y < nY; y++) { 
+        for (int x = 0; x < nX; x++) { 
+            int idx = getIdx(x, y, nX, nY); 
+ 
+            // create spring to particles on the right 
+            addNeighbor(idx, getIdx(x+1, y, nX, nY)); 
+            addNeighbor(idx, getIdx(x+2, y, nX, nY)); 
+ 
+            // create spring to particles below 
+            addNeighbor(idx, getIdx(x, y+1, nX, nY)); 
+            addNeighbor(idx, getIdx(x, y+2, nX, nY)); 
+ 
+            // create spring to particle to the bottom right 
+            addNeighbor(idx, getIdx(x+1, y+1, nX, nY)); 
+        } 
+    } 
 }
 
 void TaskLect05_Springs::generateScene4()
@@ -205,10 +234,24 @@ void TaskLect05_Springs::setForces()
 
         for (auto& n : neighborList)
         {
-            // todo students
+            auto dx = glm::length(pos[n.idx] - p0) - n.distance;
+            auto dn = glm::normalize(pos[n.idx] - p0);
+            auto fs = kSpring * dx * dn;
+
+            force0 += fs;
+            forces[n.idx] -= fs;
+            
+            if (m_bUseDampingSpring)
+            {
+                auto vd0 = dn * glm::dot(v0, dn);
+                auto vd1 = dn * glm::dot(vel[n.idx], dn);
+                auto fd = (1.0f) * kdSpring * (vd1 - vd0);
+
+                force0 += fd;
+                forces[n.idx] -= fd;
+            }
         }
     }
-
 
 }
 
