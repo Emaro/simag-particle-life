@@ -66,16 +66,50 @@ private:
 	// The following is only dummy-code, which will be replaces in lecture 04.
 	
 
-#ifndef USE_LINES
-	bool useLineSegments = false;
-	void handleBallLineCollision() {};
-	void drawLineSegments() const {};
-	void clearLines() {};
-	void copyLinesToPS1() {};
-	void copyLinesFromPS1() {};
-	void createLines0() {};
-	void createLines1() {};
-	void createLines2() {};
+	bool useLineSegments = true;
 
-#endif
+	class Line
+	{
+	private:
+		glm::vec3 p0;
+		glm::vec3 p1;
+		float rot = 0; // rotation
+		glm::vec3 cent; // center
+
+		void swap(glm::vec3& v0, glm::vec3& v1) { glm::vec3 dummy = v0; v0 = v1; v1 = dummy; }
+
+	public:
+		Line(glm::vec3 l0, glm::vec3 l1) : p0(l0), p1(l1)
+		{
+			update();
+		}
+
+		void update()
+		{
+			const float pi = 3.14159265359f;
+			rot = atan2(p1.y - p0.y, p1.x - p0.x);
+			cent = (p0 + p1) / 2.0f;
+		}
+
+		glm::vec3 const& l0() const { return p0; }
+		glm::vec3 const& l1() const { return p1; }
+		glm::vec3 const& center() const { return cent; }
+		float const& rotation() const { return rot; }
+		bool isPointWithinLineRange(glm::vec3 const& p) const
+		{
+			return (p.x >= p0.x && p.x <= p1.x);
+		}
+		void setLine(glm::vec3 const& l0, glm::vec3 const& l1) { p0 = l0; p1 = l1; update(); }
+	};
+
+	std::vector<Line> m_lines;
+	void handleBallLineCollision(int i, Line const& line);
+	void handleBallLineCollision();
+	void copyLinesToPS1();
+	void copyLinesFromPS1();
+	void createLines0();
+	void createLines1();
+	void createLines2();
+	void drawLineSegments() const;
+	void clearLines() { m_lines.clear(); }
 };

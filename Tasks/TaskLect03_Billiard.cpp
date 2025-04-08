@@ -38,11 +38,17 @@ void TaskLect03_Billiard::createScene()
     // Create simple billiard scene:
     // 6 balls in a triangle on the left (velocities=[vel0])
     // 1 ball on the right (velocities=[velStart])
-
     // Example to add a ball:
     // addBall(glm::vec3(0, 0, 0), vel0, r, mass);
 
-    // todo students
+    addBall(glm::vec3(3, 0, 0), velStart, r, mass);
+
+    addBall(glm::vec3(-1, 0, 0), vel0, r, mass);
+    addBall(glm::vec3(-2, .5, 0), vel0, r, mass);
+    addBall(glm::vec3(-2, -.5, 0), vel0, r, mass);
+    addBall(glm::vec3(-3, 0, 0), vel0, r, mass);
+    addBall(glm::vec3(-3, 1, 0), vel0, r, mass);
+    addBall(glm::vec3(-3, -1, 0), vel0, r, mass);
 }
 
 void TaskLect03_Billiard::createScene2()
@@ -58,8 +64,18 @@ void TaskLect03_Billiard::setRandomVelocities()
     // See helper methods above:
     // rand_m11() => return random number from -1..1
     // rand_01()  => return random number from 0..1
+    float r1;
+    float r2;
 
-    // todo students
+    for (auto &b : m_balls)
+    {
+        do {
+            r1 = rand_m11();
+            r2 = rand_m11();
+        } while (r1*r1 + r2*r2 > 1);
+
+        b.vel() = glm::vec3(r1, r2, 0) * maxSpeed;
+    }
 }
 
 void TaskLect03_Billiard::setRandomRadius()
@@ -67,9 +83,8 @@ void TaskLect03_Billiard::setRandomRadius()
     float maxRadius = 0.8f;
     float minRadius = 0.2f;
 
-    // Set random radius for all balls
-
-    // todo students
+    for (auto &b : m_balls)
+        b.radius() = (rand_01() * (maxRadius - minRadius)) + minRadius;
 }
 
 void TaskLect03_Billiard::handleBallBallCollision(int i, int j)
@@ -79,7 +94,32 @@ void TaskLect03_Billiard::handleBallBallCollision(int i, int j)
     auto& ball1 = m_balls[i];
     auto& ball2 = m_balls[j];
 
-    // todo students
+    auto r2 = ball1.radius() + ball2.radius();
+    auto pdiff = ball1.pos() - ball2.pos();
+
+    if (r2 > glm::length(pdiff)) {
+        auto d2 = (r2 - glm::length(pdiff)) / 2;
+        auto dn = glm::normalize(pdiff);
+
+        ball1.pos() += dn * d2;
+        ball2.pos() -= dn * d2;
+
+        auto pj1 = dn * glm::dot(ball1.vel(), dn);
+        auto pj2 = dn * glm::dot(ball2.vel(), dn);
+
+        auto m2 = ball1.mass() + ball2.mass();
+        auto md = ball1.mass() - ball2.mass();
+
+        // Preserve momentum / energy
+        auto v1 = pj1 * md / m2
+            + pj2 * (2 * ball2.mass()) / m2;
+
+        auto v2 = pj1 * (2 * ball1.mass()) / m2
+            + pj2 * -md / m2;
+
+        ball1.vel() -= pj1 - v1;
+        ball2.vel() -= pj2 - v2;
+    }
 }
 
 void TaskLect03_Billiard::handleBallWallCollision(int i)
@@ -94,7 +134,29 @@ void TaskLect03_Billiard::handleBallWallCollision(int i)
     glm::vec3 const& wallMin = m_wallMin;
     glm::vec3 const& wallMax = m_wallMax;
 
-    // todo students
+    if (p.x + r > wallMax.x)
+    {
+        p.x = wallMax.x - r;
+        v.x = -v.x;
+    }
+
+    if (p.y + r > wallMax.y)
+    {
+        p.y = wallMax.y - r;
+        v.y = -v.y;
+    }
+
+    if (p.x - r < wallMin.x)
+    {
+        p.x = wallMin.x + r;
+        v.x = -v.x;
+    }
+
+    if (p.y - r < wallMin.y)
+    {
+        p.y = wallMin.y + r;
+        v.y = -v.y;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -198,3 +260,117 @@ const char* TaskLect03_Billiard::toString() const
 }
 
 // ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+void TaskLect03_Billiard::copyLinesToPS1()
+{
+    auto& ps = particleSystem(1);
+    ps.clear();
+    for (auto const& it : m_lines)
+    {
+        ps.add(it.l0());
+        ps.add(it.l1());
+    }
+}
+
+void TaskLect03_Billiard::copyLinesFromPS1()
+{
+    auto& ps = particleSystem(1);
+    if (ps.size() != m_lines.size() * 2) return;
+    int cnt = 0;
+    for (auto& it : m_lines)
+    {
+        it.setLine(ps.positions()[cnt], ps.positions()[cnt + 1]);
+        ps.add(it.l1());
+        cnt += 2;
+    }
+}
+
+void TaskLect03_Billiard::drawLineSegments() const
+{
+    glColor3f(1, 1, 0);
+    glLineWidth(5.0f);
+    glBegin(GL_LINES);
+    for (auto const& it : m_lines)
+    {
+        glVertex3fv(glm::value_ptr(it.l0()));
+        glVertex3fv(glm::value_ptr(it.l1()));
+    }
+    glEnd();
+    glLineWidth(1.0f);
+}
+
+void TaskLect03_Billiard::createLines0()
+{
+    Line l(glm::vec3(-5, -3, 0), glm::vec3(5, 0, 0));
+    m_lines.push_back(l);
+}
+
+void TaskLect03_Billiard::createLines1()
+{
+    float bottom = -2;
+    glm::vec3 pPrev(-5, bottom, 0);
+    for (int i = -4; i <= 5; i++)
+    {
+        glm::vec3 pNext((float)i, bottom + rand_m11(), 0);
+        Line l(pPrev, pNext);
+        m_lines.push_back(l);
+        pPrev = pNext;
+    }
+}
+
+void TaskLect03_Billiard::createLines2()
+{
+    float pi = glm::pi<float>();
+    float bottom = -2;
+    glm::vec3 pPrev(-5, bottom, 0);
+    for (float i = -5; i <= 5; i += 0.2)
+    {
+        // really? *exactly* like shown?
+        auto k = ((i + 5) * 4 * pi / 10 + pi / 2);
+        glm::vec3 pNext(i, bottom + (glm::sin(k) - 1) / 2, 0);
+        Line l(pPrev, pNext);
+        m_lines.push_back(l);
+        pPrev = pNext;
+    }
+}
+
+void TaskLect03_Billiard::handleBallLineCollision()
+{
+    int nBalls = (int)particleSystem(0).size();
+    if (nBalls != (int)m_balls.size()) return;
+
+    for (int i = 0; i < nBalls; i++)
+    {
+        for (auto const& l : m_lines)
+        {
+            handleBallLineCollision(i, l);
+        }
+    }
+}
+
+void TaskLect03_Billiard::handleBallLineCollision(int i, Line const& line)
+{
+    if (i > (int)m_balls.size()) return;
+
+    Ball& ball = m_balls[i];
+    glm::vec3& p = ball.pos();
+    glm::vec3& v = ball.vel();
+    float r = ball.radius();
+
+    glm::vec3 pc = p - line.center();
+
+    if (!line.isPointWithinLineRange(p)) return;
+
+    glm::vec3 rp = glm::rotateZ(pc, -line.rotation()); // rotate vector v by
+    auto rv = glm::rotateZ(v, -line.rotation());
+    
+    if (rp.y - r < 0)
+    {
+        rp.y = r;
+        rv.y = -rv.y;
+    }
+
+    p = line.center() + glm::rotateZ(rp, line.rotation());
+    v = glm::rotateZ(rv, line.rotation());
+
+}
