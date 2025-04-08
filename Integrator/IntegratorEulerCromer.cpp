@@ -23,9 +23,11 @@ void IntegratorEulerCromer::step(
 		auto& m = *mass;
 		auto& f = *force;
 
-		// todo students
-		// Simple kinematics for now
-		p += v * dt;
+		// velocity-update
+		v = v + dt * f / m;
+
+		// position-update
+		p = p + dt * v;
 
 		pos++;
 		vel++;

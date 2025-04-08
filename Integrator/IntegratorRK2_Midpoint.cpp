@@ -30,7 +30,14 @@ void IntegratorRK2_Midpoint::step(
 
 			// Use t0 and t1 as temporary values, which can be used in pass 2
 			
-			// todo students
+
+			// velocity-update
+			t1 = v;
+			v = v + (dt/2) * f / m;
+
+			t0 = p;
+			p = p + (dt/2) * t1;
+		
 
 			pos++;
 			vel++;
@@ -53,6 +60,11 @@ void IntegratorRK2_Midpoint::step(
 			auto& t1 = *temp1;
 
 			// todo students
+
+			p = t0 + dt * v;
+		
+			// velocity-update
+			v = t1 + dt * f / m;
 
 			pos++;
 			vel++;

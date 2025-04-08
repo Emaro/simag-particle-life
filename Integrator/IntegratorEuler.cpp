@@ -25,9 +25,11 @@ void IntegratorEuler::step(
 		auto& m = *mass;
 		auto& f = *force;
 
-		// todo students
 		// position-update
+		p = p + dt * v;
+		
 		// velocity-update
+		v = v + dt * f / m;
 
 		pos++;
 		vel++;
