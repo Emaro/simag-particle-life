@@ -70,6 +70,9 @@ namespace
         app->registerTask<TaskLect04_Pendula>();
 
         app->registerTask<TaskLect05_Springs>();
+        
+        app->registerTask<TaskLect09_RigidBodies>();
+
 
         // Assignment Tasks
         app->registerTask<TaskAssignment_Morph>();
@@ -107,12 +110,13 @@ namespace
         //app->pushDefaultTask<TaskPickParticle>(); // -> task1
 
         // Setup Springs
-        /*
+        
         app->pushDefaultTask<TaskPickParticle>();
-        app->pushDefaultTask<TaskLect05_Springs>();
-        app->pushDefaultTask<TaskLect04_AddForce>();
-        app->pushDefaultTask<TaskCollisionFloor>();
-        */
+        //app->pushDefaultTask<TaskLect05_Springs>();
+        //app->pushDefaultTask<TaskLect04_AddForce>();
+        //app->pushDefaultTask<TaskCollisionFloor>();
+       // app->pushDefaultTask<TaskCollision>();
+        app->pushDefaultTask<TaskLect09_RigidBodies>();
 
         // Setup Pendula
         //app->pushDefaultTask<TaskPickParticle>();
@@ -123,12 +127,16 @@ namespace
         //app->pushDefaultTask<TaskEnqueuePS>();
 
         // Setup Fireworks
-        //app->pushDefaultTask<TaskAssignment_Fireworks>();
-        //app->pushDefaultTask<TaskLect04_AddForce>();
+        // app->pushDefaultTask<TaskAssignment_Fireworks>();
+        // app->pushDefaultTask<TaskLect04_AddForce>();
 
         // Setup Billiard
-        //app->pushDefaultTask<TaskLect03_Billiard>(); // -> task0
-        //app->pushDefaultTask<TaskPickParticle>(); // -> task1
+        // app->pushDefaultTask<TaskLect03_Billiard>(); // -> task0
+        // app->pushDefaultTask<TaskPickParticle>(); // -> task1
 
+        // Mouse force
+        // app->pushDefaultTask<TaskMouseAddVelocity>();
+        // app->pushDefaultTask<TaskCreatePsFromImage>();
+        
     }
 }
