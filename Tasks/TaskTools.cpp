@@ -16,7 +16,7 @@ namespace
     {
         for (auto& it : ps.states())
         {
-            // todo students
+            it.vel() = it.pos();
         }
     }
 
@@ -24,7 +24,7 @@ namespace
     {
         for (auto& it : ps.states())
         {
-            // todo students
+            it.vel() = glm::normalize(it.pos());
         }
     }
 
@@ -32,7 +32,7 @@ namespace
     {
         for (auto& it : ps.states())
         {
-            // todo students
+            it.vel() = glm::vec3(-it.pos().y, it.pos().x, it.pos().z);
         }
     }
 
@@ -40,7 +40,8 @@ namespace
     {
         for (auto& it : ps.states())
         {
-            // todo students
+            auto n = glm::normalize(it.pos());
+            it.vel() = glm::vec3(-n.y, n.x, n.z);
         }
     }
 
@@ -48,7 +49,7 @@ namespace
     {
         for (auto& it : ps.states())
         {
-            // todo students
+            it.vel() = -it.vel();
         }
     }
 
@@ -65,10 +66,16 @@ void TaskTools::generateCircle(int n)
 
     float radius = 2.0f;
     glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec3 p(radius, 0, 0);
 
     // Generate n particles on a circle around the root.
-
-    // todo students
+    for (int i = 0; i < n; i++)
+    {
+        float angle = i * glm::two_pi<float>() / n;
+        glm::mat2x2 rot(glm::cos(angle), glm::sin(angle), -glm::sin(angle), glm::cos(angle));
+        glm::mat3x3 rot3(rot);
+        ps.add(rot3 * p, color);
+    }
 }
 
 void TaskTools::generateQuad()
@@ -82,8 +89,9 @@ void TaskTools::generateQuad()
     glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
 
     // Generate a quad of particles with distance dx within pMin and pMax.
-
-    // todo students
+    for (float i = pMin.x; i - pMax.x < 1e-5; i += dx)
+    for (float j = pMin.y; j - pMax.y < 1e-5; j += dx)
+        ps.add(glm::vec3(i, j, 0), color);
 }
 
 void TaskTools::setForces()

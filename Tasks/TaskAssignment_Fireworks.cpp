@@ -42,8 +42,32 @@ void TaskAssignment_Fireworks::doWork()
         m_lifetimeCounter--;
     }
 
-    // todo students
+    if (m_lifetimeCounter <= 0 && ps.size() == 1)
+    {
+        auto p = ps.particle(0).pos();
+        auto m = ps.particle(0).mass() / m_createNParticles;
+        auto v = ps.particle(0).vel();
 
+        ps.clear();
+
+        for (int i = 0; i < m_createNParticles - 1; i += 2)
+        {
+            auto rv = vecRand(-1, 1);
+            while (glm::length(rv) > 1) rv = vecRand(-1, 1);
+
+            ps.add(p, v + rv, m);
+            ps.add(p, v - rv, m);
+        }
+
+        if (m_createNParticles % 2 == 1)
+            ps.add(p, v, m);
+    }
+
+    if (m_useBallistics)
+    {
+        for (auto &v : ps.velocities())
+            v.y -= 0.1;
+    }
 }
 
 void TaskAssignment_Fireworks::draw() const
@@ -81,8 +105,8 @@ void TaskAssignment_Fireworks::imGui()
         m_lifetimeCounter = m_lifetime;
 
         // Add particle
-
-        // todo students
+        auto v = glm::vec3(5 * (((float) rand() / (float) RAND_MAX * 2) - 1), m_initSpeedY, 0);
+        ps.add(glm::vec3(0), v);
     }
     ImGui::SliderFloat(paramName("Init Speed Y-Direction"), &m_initSpeedY, 1.0f, 30.0f);
     ImGui::SliderInt(paramName("Lifetime (frames)"), &m_lifetime, 10, 100);

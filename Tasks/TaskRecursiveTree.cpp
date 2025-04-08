@@ -5,21 +5,30 @@
 #include <glad/gl.h>
 #include <imgui/imgui.h>
 
+
 glm::vec3 TaskRecursiveTree::rotate2D(glm::vec3 const& v, float angle)
 {
     glm::vec3 vOut(0);
-    // todo students
-    return vOut;
+	vOut.x = cos(angle)*v.x - sin(angle)*v.y;
+	vOut.y = sin(angle)*v.x + cos(angle)*v.y;
+	return vOut;
 }
 
 void TaskRecursiveTree::addPoint(glm::vec3 const& pos)
 {
-    // todo students
+    particleSystem(0).add(pos);
 }
 
 void TaskRecursiveTree::tree(int segment, float length, float lengthMax, float lengthScale, glm::vec3 const& pos, glm::vec3 const& direction, float angleLeft, float angleRight, float step)
 {
-    // todo students
+    if (segment == 0) return;
+
+	for (float i = 0.0f; i < length; i += step)
+		addPoint(pos + direction * i);
+ 
+	tree(segment - 1, length * lengthScale, lengthMax, lengthScale, pos + direction * length, rotate2D(direction, angleLeft), angleLeft, angleRight, step);
+	tree(segment - 1, length * lengthScale, lengthMax, lengthScale, pos + direction * length, rotate2D(direction, angleRight), angleLeft, angleRight, step);
+	tree(segment - 1, length * lengthScale, lengthMax, lengthScale, pos + direction * length, rotate2D(direction, angleRight + angleLeft), angleLeft, angleRight, step);
 }
 
 
@@ -70,5 +79,3 @@ const char* TaskRecursiveTree::toString() const
     m_string = ss.str();
     return m_string.c_str();
 }
-
-

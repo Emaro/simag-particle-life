@@ -32,6 +32,13 @@ void TaskMouseAddVelocity::setForces()
         const float radius = m_radius;
 
         // todo students
+        if (glm::length(pos - circleCenter3d) < radius)
+            vel = vel
+                + m_intensity
+                    * 0.5f *(glm::cos(glm::pi<float>() * glm::length(pos - circleCenter3d) / radius) + 1)
+                    * glm::normalize(pos - circleCenter3d);
+
+        vel *= m_damping;
     }
 }
 
