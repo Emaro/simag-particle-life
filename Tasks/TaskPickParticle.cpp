@@ -27,9 +27,31 @@ void TaskPickParticle::rotateAllStaticParticlesAroundCenter()
     auto& ps = particleSystem(m_workOnPsIdx);
     float dxRotation = (gEnv->stateGui->mousePos.x - m_clickPos.x)/(float)gEnv->camera->sizeWindow().x * 2.0f * glm::pi<float>();
     m_clickPos = gEnv->stateGui->mousePos;
+    int s = (int)ps.size();
 
     // todo students
+    glm::vec3 center = glm::vec3(0);
+    int numOfStatic = 0;
+    for (int i = 0; i < s; i++)
+    {
+        if (ps.states()[i].isStatic())
+        {
+            center += ps.positions()[i];
+            numOfStatic++;
+        }
+    }
 
+    center = center / (float) numOfStatic;
+
+    for (int i = 0; i < s; i++)
+    {
+        if (ps.states()[i].isStatic())
+        {
+            ps.positions()[i] -= center;
+            ps.positions()[i] = glm::rotate(ps.positions()[i], dxRotation, glm::vec3(0,1,0));
+            ps.positions()[i] += center;
+        }
+    }
 }
 
 void TaskPickParticle::setForces()

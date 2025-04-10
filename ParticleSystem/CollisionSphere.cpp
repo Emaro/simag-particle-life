@@ -42,14 +42,42 @@ void CollisionSphere::handleCollisionByVelocity(ParticleSystem& ps, float kn_nor
         glm::vec3& f = forces[i];
 
         // todo students
+        vecToCenter = p - sphereP;
+        sphereNormal = glm::normalize(vecToCenter);
+        float h = glm::length(vecToCenter) ;
+        if (h > sphereR) continue;
 
+        p += sphereNormal * (sphereR - h + eps);
+        v = glm::reflect(v, sphereNormal);
+
+        handleFriction(v, f, sphereNormal, kn_normalFriction, kt_tangentialFriction);
     }
 
 }
 
 void CollisionSphere::handleCollisionByForce(ParticleSystem& ps, float forceStrength, float kn_normalFriction, float kt_tangentialFriction)
 {
-    // todo students
+    int s = (int)ps.size();
+    if (s < 1) return;
+
+    auto& pos = ps.positions();
+    auto& vel = ps.velocities();
+    auto& forces = ps.forces();
+    auto& states = ps.states();
+
+    for (int i = 0; i < s; i++)
+    {
+        if (states[i].isStatic()) continue; // Do not collide static particles
+
+        auto cp = pos[i] - m_p;
+        glm::vec3 n = glm::normalize(cp);
+        float h =  glm::length(cp) ;
+
+        if (h > m_r) continue;
+
+        forces[i] += n * (m_r - h) * forceStrength;
+        handleFriction(vel[i], forces[i], n, kn_normalFriction, kt_tangentialFriction);
+    }
 }
 
 void CollisionSphere::draw() const

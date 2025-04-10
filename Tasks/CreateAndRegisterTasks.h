@@ -111,12 +111,12 @@ namespace
 
         // Setup Springs
         
-        app->pushDefaultTask<TaskPickParticle>();
-        //app->pushDefaultTask<TaskLect05_Springs>();
-        //app->pushDefaultTask<TaskLect04_AddForce>();
+        // app->pushDefaultTask<TaskPickParticle>();
+        // app->pushDefaultTask<TaskLect05_Springs>();
+        // app->pushDefaultTask<TaskLect04_AddForce>();
         //app->pushDefaultTask<TaskCollisionFloor>();
-       // app->pushDefaultTask<TaskCollision>();
-        app->pushDefaultTask<TaskLect09_RigidBodies>();
+        // app->pushDefaultTask<TaskCollision>();
+        // app->pushDefaultTask<TaskLect09_RigidBodies>();
 
         // Setup Pendula
         //app->pushDefaultTask<TaskPickParticle>();

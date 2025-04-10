@@ -6,3 +6,4 @@ buildLinux/
 CMakeLists.txt
 SimAg_SolutionToLecture.py
 .vscode/
+imgui.ini

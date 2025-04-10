@@ -100,8 +100,25 @@ void TaskLect05_Springs::generateScene1_rope()
 
 void TaskLect05_Springs::addBox(glm::vec3 const& p0, glm::vec3 const& p1)
 {
+    auto& ps = particleSystem(m_workOnPsIdx);
+    int nextIdx = ps.size();
 
-    // todo students
+    for (int i = 0; i < 8; i++)
+    {
+        glm::vec3 p = glm::vec3(
+            i & 1 ? p1.x : p0.x,
+            i & 2 ? p1.y : p0.y,
+            i & 4 ? p1.z : p0.z
+        );
+
+        ps.add(p);
+    }
+
+    for (int i = 0; i < 8; i++)
+    for (int j = i+1; j < 8; j++)
+    {
+        addNeighbor(nextIdx + i, nextIdx + j);
+    }
 }
 
 void TaskLect05_Springs::generateScene2_ragdoll()
@@ -113,9 +130,76 @@ void TaskLect05_Springs::generateScene2_ragdoll()
     gEnv->stateSim->dtFixedNoOfStepsPerFrame = 10;
 
     auto& ps = particleSystem(m_workOnPsIdx);
+    auto currI = ps.size();
+    //
+    //  todo students
+    // 0-7
+    addBox(glm::vec3(-0.3, 0, -0.1), glm::vec3(-0.1, 0.4, .1));
+    // 8-15
+    addBox(glm::vec3(0.1, 0, -0.1), glm::vec3(.3, 0.4, .1));
+    // 16-23
+    addBox(glm::vec3(-0.3, 0.5, -0.1), glm::vec3(-0.1, 0.9, .1));
+    // 24-31
+    addBox(glm::vec3(0.1, 0.5, -0.1), glm::vec3(.3, 0.9, .1));
 
-    // todo students
 
+    addNeighbor(currI + 2, currI + 16 + 0);
+    addNeighbor(currI + 3, currI + 16 + 1);
+    addNeighbor(currI + 6, currI + 16 + 4);
+    addNeighbor(currI + 7, currI + 16 + 5);
+    addNeighbor(currI + 2, currI + 16 + 1);
+    addNeighbor(currI + 3, currI + 16 + 0);
+    addNeighbor(currI + 6, currI + 16 + 5);
+    addNeighbor(currI + 7, currI + 16 + 4);
+
+    addNeighbor(currI+8 + 2, currI+8 + 16 + 0);
+    addNeighbor(currI+8 + 3, currI+8 + 16 + 1);
+    addNeighbor(currI+8 + 6, currI+8 + 16 + 4);
+    addNeighbor(currI+8 + 7, currI+8 + 16 + 5);
+    addNeighbor(currI+8 + 2, currI+8 + 16 + 1);
+    addNeighbor(currI+8 + 3, currI+8 + 16 + 0);
+    addNeighbor(currI+8 + 6, currI+8 + 16 + 5);
+    addNeighbor(currI+8 + 7, currI+8 + 16 + 4);
+
+    addBox(glm::vec3(-0.3, 1.0, -0.2), glm::vec3(0.3, 1.8, .2));
+
+    addNeighbor(currI+16 + 2, currI + 32 + 0);
+    addNeighbor(currI+16 + 3, currI + 32 + 1);
+    addNeighbor(currI+16 + 6, currI + 32 + 4);
+    addNeighbor(currI+16 + 7, currI + 32 + 5);
+
+    addNeighbor(currI+24 + 2, currI + 32 + 0);
+    addNeighbor(currI+24 + 3, currI + 32 + 1);
+    addNeighbor(currI+24 + 6, currI + 32 + 4);
+    addNeighbor(currI+24 + 7, currI + 32 + 5);
+
+    // 40-47
+    addBox(glm::vec3(-1.2, 1.6, -.1), glm::vec3(-.35, 1.8, .1));
+    // 48-55
+    addBox(glm::vec3(.35, 1.6, -0.1), glm::vec3(1.2, 1.8, .1));
+
+    addNeighbor(currI+40 + 1, currI + 32 + 0);
+    addNeighbor(currI+40 + 3, currI + 32 + 2);
+    addNeighbor(currI+40 + 5, currI + 32 + 4);
+    addNeighbor(currI+40 + 7, currI + 32 + 6);
+
+    addNeighbor(currI+48 + 0, currI + 32 + 1);
+    addNeighbor(currI+48 + 2, currI + 32 + 3);
+    addNeighbor(currI+48 + 4, currI + 32 + 5);
+    addNeighbor(currI+48 + 6, currI + 32 + 7);
+
+    // 56-63
+    addBox(glm::vec3(-0.15, 1.85, -0.15), glm::vec3(0.15, 2.1, .15));
+
+    addNeighbor(currI+32 +2, currI + 56 + 2);
+    addNeighbor(currI+32 +3, currI + 56 + 3);
+    addNeighbor(currI+32 +6, currI + 56 + 6);
+    addNeighbor(currI+32 +7, currI + 56 + 7);
+
+    addNeighbor(currI+32 + 2, currI + 56 + 0);
+    addNeighbor(currI+32 + 3, currI + 56 + 1);
+    addNeighbor(currI+32 + 6, currI + 56 + 4);
+    addNeighbor(currI+32 + 7, currI + 56 + 5);
 }
 
 
@@ -130,10 +214,10 @@ void TaskLect05_Springs::generateScene3_cloth()
     auto& ps = particleSystem(m_workOnPsIdx);
     ps.clear();
 
-    const int nX = 15;
-    const int nY = 16;
-    const float height = 3.0f;
-    const float scale = 0.3f;
+    const int nX = 50;
+    const int nY = 51;
+    const float height = 5.0f;
+    const float scale = 0.1f;
 
     bool bCreate2SymmetricSpringsPerSpring = true;
 
@@ -152,7 +236,7 @@ void TaskLect05_Springs::generateScene3_cloth()
 
     for (int y = 0; y < nY; y++) { 
         for (int x = 0; x < nX; x++) { 
-            addParticle(glm::vec3(x * scale, height, y * scale), y==0); 
+            addParticle(glm::vec3(x * scale - (nX * scale) / 2.0, height, y * scale - (nY*scale) / 2.0), false); 
         } 
     } 
  
@@ -169,7 +253,7 @@ void TaskLect05_Springs::generateScene3_cloth()
             addNeighbor(idx, getIdx(x, y+2, nX, nY)); 
  
             // create spring to particle to the bottom right 
-            addNeighbor(idx, getIdx(x+1, y+1, nX, nY)); 
+            // addNeighbor(idx, getIdx(x+1, y+1, nX, nY)); 
         } 
     } 
 }

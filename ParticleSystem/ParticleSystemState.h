@@ -31,7 +31,7 @@ private:
 	bool m_bDrawPoints = true;
 	bool m_bDrawVelocities = false;
 	bool m_bDrawForces = false;
-	bool m_bDrawNeighbors = false;
+	bool m_bDrawNeighbors = true;
 
 	bool m_bShowPsInfo = false;
 

@@ -47,6 +47,7 @@ void TaskCollision::doWork()
         // Rotate position around y axis with speed 'm_animateColliderSpeed'
 
         // todo students
+        pos = glm::rotate(pos, m_animateColliderSpeed, glm::vec3(0,1,0));
 
         m_collider->setPosition(pos);
         

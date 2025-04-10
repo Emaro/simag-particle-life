@@ -24,7 +24,7 @@ namespace
     {
 
         // todo students
-
+        
     }
 
 }
@@ -46,7 +46,15 @@ void TaskAssignment_GravityPlanets::setForces()
 
     const float intensity = m_gravityIntensity;
 
-    // todo students
+    for (int i = 0; i < s; i++)
+    for (int j = i+1; j < s; j++)
+    {
+        temp = pos[j] - pos[i];
+        float len = glm::length(temp);
+        gravity = intensity * glm::normalize(temp) * mass[i] * mass[j] / (len * len);
+        forces[i] += gravity;
+        forces[j] -= gravity;
+    }
 
 }
 
@@ -63,7 +71,8 @@ void TaskAssignment_GravityPlanets::generateScene0()
     auto& ps = particleSystem(m_workOnPsIdx);
     ps.clear();
 
-    // todo students
+    ps.add(glm::vec3(0), glm::vec3(0), 100);
+    ps.add(glm::vec3(2,0,0), glm::vec3(0,1,0), 1);
 
 }
 
@@ -75,7 +84,13 @@ void TaskAssignment_GravityPlanets::generateScene1()
     auto& ps = particleSystem(m_workOnPsIdx);
     ps.clear();
 
-    // todo students
+    ps.add(glm::vec3(0,0,0), glm::vec3(0,0,0), 100);
+    ps.add(glm::vec3(2,0,0), glm::vec3(0,1,0), 3);
+    ps.add(glm::vec3(2.1,0,0), glm::vec3(0,2.5,0), 0.3);
+    ps.add(glm::vec3(3,0,0), glm::vec3(0,1,0), 2);
+    ps.add(glm::vec3(3.1,0,0), glm::vec3(0,2.5,0), 0.3);
+    ps.add(glm::vec3(4,0,0), glm::vec3(0,1,0), 1);
+    ps.add(glm::vec3(4.1,0,0), glm::vec3(0,2.5,0), 0.3);
 
 }
 

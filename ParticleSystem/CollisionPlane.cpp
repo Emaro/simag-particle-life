@@ -54,7 +54,26 @@ void CollisionPlane::handleCollisionByVelocity(ParticleSystem& ps, float kn_norm
 
 void CollisionPlane::handleCollisionByForce(ParticleSystem& ps, float forceStrength, float kn_normalFriction, float kt_tangentialFriction)
 {
-    // todo students
+    int s = (int)ps.size();
+    if (s < 1) return;
+
+    auto& pos = ps.positions();
+    auto& vel = ps.velocities();
+    auto& forces = ps.forces();
+    auto& states = ps.states();
+
+    for (int i = 0; i < s; i++)
+    {
+        if (states[i].isStatic()) continue; // Do not collide static particles
+
+        auto pq = pos[i] - m_p;
+        auto h = glm::dot(m_n, pq);
+
+        if (h >= 0) continue;
+
+        forces[i] -= m_n * h * forceStrength;
+        handleFriction(vel[i], forces[i], m_n, kn_normalFriction, kt_tangentialFriction);
+    }
 
 }
 
