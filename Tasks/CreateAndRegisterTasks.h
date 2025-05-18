@@ -35,6 +35,7 @@
 #include "TaskCollision.h"
 #include "TaskCollisionFloor.h"
 
+#include "TaskAssignment_ParticleLife.h"
 
 
 
@@ -85,7 +86,7 @@ namespace
         app->registerTask<TaskFlocking>();
 
         // Register your own tasks here...
-
+        app->registerTask<TaskAssignment_ParticleLife>();
 
     }
 
