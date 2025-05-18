@@ -30,7 +30,7 @@ glm::vec3 TaskFlocking::steerForceCraigReynolds(int particleIdx, glm::vec3 const
 	
 	glm::vec3 steer(0);
 
-	// todo students
+	steer = glm::normalize(direction) * m_maxSpeed - ps.velocities()[particleIdx];
 
 	limitVectorLength(steer, m_maxForce);
 	return steer;
@@ -60,7 +60,7 @@ glm::vec3 TaskFlocking::separate(int particleIdx)
 			// Therefore, normalize the distance and weight by distance (i.e., divide by d)
 			// Acuumulate in steer
 
-			// todo students
+			steer += glm::normalize(pos - posOther) / d;
 
 			count++; // Keep track of how many
 		}

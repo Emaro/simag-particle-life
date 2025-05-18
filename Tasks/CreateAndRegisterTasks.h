@@ -82,7 +82,7 @@ namespace
         app->registerTask<TaskCollision>();
         app->registerTask<TaskCollisionFloor>();
 
-
+        app->registerTask<TaskFlocking>();
 
         // Register your own tasks here...
 
@@ -137,6 +137,12 @@ namespace
         // Mouse force
         // app->pushDefaultTask<TaskMouseAddVelocity>();
         // app->pushDefaultTask<TaskCreatePsFromImage>();
+        
+        // Floking
+
+        app->pushDefaultTask<TaskPickParticle>();
+        app->pushDefaultTask<TaskFlocking>();
+        app->pushDefaultTask<TaskMouseAddVelocity>();
         
     }
 }
