@@ -19,6 +19,16 @@ public:
 private:
 	int m_workOnPsIdx = 0;
 	int m_noParticles = 1000;
+	float m_viscosity = 0.01f;
+	
+	bool m_bounded = false;
+	int m_w_xmin = -5;
+	int m_w_xmax = 5;
+	int m_w_ymin = -5;
+	int m_w_ymax = 5;
+
+	float m_forceTable[5][5];
+	float m_radiusTable[5][5];
 
 	// Green interactions
 	float m_gxg = 0.0f; // green on green
@@ -82,4 +92,5 @@ private:
 
 	// Functions
 	void generateRandomScene();
+	void fillInteractionTables();
 };
