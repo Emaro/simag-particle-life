@@ -140,10 +140,10 @@ namespace
         // app->pushDefaultTask<TaskCreatePsFromImage>();
         
         // Floking
+        //app->pushDefaultTask<TaskPickParticle>();
+        //app->pushDefaultTask<TaskFlocking>();
+        //app->pushDefaultTask<TaskMouseAddVelocity>();
 
-        app->pushDefaultTask<TaskPickParticle>();
-        app->pushDefaultTask<TaskFlocking>();
-        app->pushDefaultTask<TaskMouseAddVelocity>();
-        
+        app->pushDefaultTask<TaskAssignment_ParticleLife>();
     }
 }

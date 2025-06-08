@@ -1,4 +1,4 @@
-#include "TaskAssignment_ParticleLife.h"
+﻿#include "TaskAssignment_ParticleLife.h"
 
 #include <sstream>
 #include <iostream>
@@ -14,6 +14,7 @@
 #include "../Helper/HelperDraw.h"
 
 // Add more headers here if you want...
+#include <random>
 
 namespace
 {
@@ -79,21 +80,119 @@ void TaskAssignment_ParticleLife::draw() const
     }*/
 }
 
+void TaskAssignment_ParticleLife::generateRandomScene()
+{
+    auto& ps = particleSystem(m_workOnPsIdx);
+    ps.clear();
+
+    // colors
+    std::vector<glm::vec4> colors = {
+        glm::vec4{0.0f, 1.0f, 0.0f, 1.0f}, // Green
+        glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}, // Red
+        glm::vec4{0.0f, 0.0f, 1.0f, 1.0f}, // Blue
+        glm::vec4{1.0f, 1.0f, 0.0f, 1.0f}, // Yellow
+        glm::vec4{0.5f, 0.0f, 1.0f, 1.0f}  // Purple
+    };
+
+    int no_particles = m_noParticles;
+    
+    std::default_random_engine rng(std::random_device{}());
+    std::uniform_real_distribution<float> dist_pos(-5.0f, 5.0f);
+    std::uniform_int_distribution<int> dist_color(0, 4);
+
+    for (int i = 0; i < no_particles; ++i) {
+        glm::vec3 pos(dist_pos(rng), dist_pos(rng), 0.0f);
+        int rng_col = dist_color(rng);
+        glm::vec4 color = colors[rng_col];
+        ps.add(pos, color);
+    }
+}
+
 void TaskAssignment_ParticleLife::imGui()
 {
-    ImGui::Text("%s", paramName("Test Text"));
-    if (ImGui::Button(paramName("TestButton")))
-    {
-        std::cerr << "Test Button pressed\n"; // print to terminal
+    ImGui::SliderInt(paramName("Work on PS Idx"), &m_workOnPsIdx, 0, noOfPs() - 1);
+    ImGui::Separator();
 
-        // Add particle
-        glm::vec3 pos(0, 0, 0);
-        glm::vec4 col(1.0f, 1.0f, 0.0f, 1.0f);
-        particleSystem(0).add(pos, col);
-        particleSystem(0).particleLast().vel() = glm::vec3(1.0f, -1.0f, 0.0f);
-    }
-    ImGui::Checkbox(paramName("TestCheckbox: Draw red line & Animate Colors"), &m_boolTest);
-    ImGui::SliderFloat(paramName("TestSliderFloat"), &m_sliderValue, 0.0f, 1.0f);
+    ImGui::SliderInt(paramName("Numbe of particles"), &m_noParticles, 0, 10000);
+    ImGui::Separator();
+
+    if (ImGui::Button(paramName("Generate Scene"))) { generateRandomScene(); }
+
+    float f_min = -1.0f;
+    float f_max = 1.0f;
+    float r_min = 0.01f;
+    float r_max = 5.0f;
+
+    ImGui::Begin("Interaction Sliders");
+    ImGui::Text("Green on others:");
+    ImGui::SliderFloat("Green -> Green", &m_gxg, f_min, f_max);
+    ImGui::SliderFloat("Green -> Red", &m_gxr, f_min, f_max);
+    ImGui::SliderFloat("Green -> Blue", &m_gxb, f_min, f_max);
+    ImGui::SliderFloat("Green -> Yellow", &m_gxy, f_min, f_max);
+    ImGui::SliderFloat("Green -> Purple", &m_gxp, f_min, f_max);
+
+    ImGui::SliderFloat("Radius Green -> Green", &m_rgxg, r_min, r_max);
+    ImGui::SliderFloat("Radius Green -> Red", &m_rgxr, r_min, r_max);
+    ImGui::SliderFloat("Radius Green -> Blue", &m_rgxb, r_min, r_max);
+    ImGui::SliderFloat("Radius Green -> Yellow", &m_rgxy, r_min, r_max);
+    ImGui::SliderFloat("Radius Green -> Purple", &m_rgxp, r_min, r_max);
+    ImGui::Separator();
+
+    ImGui::Text("Red on others:");
+    ImGui::SliderFloat("Red -> Green", &m_rxg, f_min, f_max);
+    ImGui::SliderFloat("Red -> Red", &m_rxr, f_min, f_max);
+    ImGui::SliderFloat("Red -> Blue", &m_rxb, f_min, f_max);
+    ImGui::SliderFloat("Red -> Yellow", &m_rxy, f_min, f_max);
+    ImGui::SliderFloat("Red -> Purple", &m_rxp, f_min, f_max);
+
+    ImGui::SliderFloat("Radius Red -> Green", &m_rrxg, r_min, r_max);
+    ImGui::SliderFloat("Radius Red -> Red", &m_rrxr, r_min, r_max);
+    ImGui::SliderFloat("Radius Red -> Blue", &m_rrxb, r_min, r_max);
+    ImGui::SliderFloat("Radius Red -> Yellow", &m_rrxy, r_min, r_max);
+    ImGui::SliderFloat("Radius Red -> Purple", &m_rrxp, r_min, r_max);
+    ImGui::Separator();
+
+    ImGui::Text("Blue on others:");
+    ImGui::SliderFloat("Blue -> Green", &m_bxg, f_min, f_max);
+    ImGui::SliderFloat("Blue -> Red", &m_bxr, f_min, f_max);
+    ImGui::SliderFloat("Blue -> Blue", &m_bxb, f_min, f_max);
+    ImGui::SliderFloat("Blue -> Yellow", &m_bxy, f_min, f_max);
+    ImGui::SliderFloat("Blue -> Purple", &m_bxp, f_min, f_max);
+
+    ImGui::SliderFloat("Radius Blue -> Green", &m_rbxg, r_min, r_max);
+    ImGui::SliderFloat("Radius Blue -> Red", &m_rbxr, r_min, r_max);
+    ImGui::SliderFloat("Radius Blue -> Blue", &m_rbxb, r_min, r_max);
+    ImGui::SliderFloat("Radius Blue -> Yellow", &m_rbxy, r_min, r_max);
+    ImGui::SliderFloat("Radius Blue -> Purple", &m_rbxp, r_min, r_max);
+    ImGui::Separator();
+
+    ImGui::Text("Yellow on others:");
+    ImGui::SliderFloat("Yellow -> Green", &m_yxg, f_min, f_max);
+    ImGui::SliderFloat("Yellow -> Red", &m_yxr, f_min, f_max);
+    ImGui::SliderFloat("Yellow -> Blue", &m_yxb, f_min, f_max);
+    ImGui::SliderFloat("Yellow -> Yellow", &m_yxy, f_min, f_max);
+    ImGui::SliderFloat("Yellow -> Purple", &m_yxp, f_min, f_max);
+
+    ImGui::SliderFloat("Radius Yellow -> Green", &m_ryxg, r_min, r_max);
+    ImGui::SliderFloat("Radius Yellow -> Red", &m_ryxr, r_min, r_max);
+    ImGui::SliderFloat("Radius Yellow -> Blue", &m_ryxb, r_min, r_max);
+    ImGui::SliderFloat("Radius Yellow -> Yellow", &m_ryxy, r_min, r_max);
+    ImGui::SliderFloat("Radius Yellow -> Purple", &m_ryxp, r_min, r_max);
+    ImGui::Separator();
+
+    ImGui::Text("Purple on others:");
+    ImGui::SliderFloat("Purple -> Green", &m_pxg, f_min, f_max);
+    ImGui::SliderFloat("Purple -> Red", &m_pxr, f_min, f_max);
+    ImGui::SliderFloat("Purple -> Blue", &m_pxb, f_min, f_max);
+    ImGui::SliderFloat("Purple -> Yellow", &m_pxy, f_min, f_max);
+    ImGui::SliderFloat("Purple -> Purple", &m_pxp, f_min, f_max);
+
+    ImGui::SliderFloat("Radius Purple -> Green", &m_rpxg, r_min, r_max);
+    ImGui::SliderFloat("Radius Purple -> Red", &m_rpxr, r_min, r_max);
+    ImGui::SliderFloat("Radius Purple -> Blue", &m_rpxb, r_min, r_max);
+    ImGui::SliderFloat("Radius Purple -> Yellow", &m_rpxy, r_min, r_max);
+    ImGui::SliderFloat("Radius Purple -> Purple", &m_rpxp, r_min, r_max);
+    ImGui::End();
 }
 
 const char* TaskAssignment_ParticleLife::toString() const
@@ -101,7 +200,7 @@ const char* TaskAssignment_ParticleLife::toString() const
     std::stringstream ss;
 
     ss << "Description:" << "\n";
-    ss << "A base for your own tasks..." << "\n";
+    ss << "Particle life simulation: \n Move the sliders to attract or repel the particle types" << "\n";
     ss << "" << "\n";
 
     /*if (m_boolTest)
@@ -114,6 +213,8 @@ const char* TaskAssignment_ParticleLife::toString() const
     }*/
 
     // ss << "SliderFloat Value: " << m_sliderValue << "\n";
+
+
 
     m_string = ss.str();
     return m_string.c_str();

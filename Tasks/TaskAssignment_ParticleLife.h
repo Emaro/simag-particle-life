@@ -17,10 +17,69 @@ public:
 	virtual const char* toString() const override;
 
 private:
+	int m_workOnPsIdx = 0;
+	int m_noParticles = 1000;
 
-    // Add private members
+	// Green interactions
+	float m_gxg = 0.0f; // green on green
+	float m_gxr = 0.0f; // green on red
+	float m_gxb = 0.0f; // green on blue
+	float m_gxy = 0.0f; // green on yellow
+	float m_gxp = 0.0f; // green on purple
+	float m_rgxg = 1.0f; // radius green on green
+	float m_rgxr = 1.0f; // radius green on red
+	float m_rgxb = 1.0f; // radius green on blue
+	float m_rgxy = 1.0f; // radius green on yellow
+	float m_rgxp = 1.0f; // radius green on purple
 
-	bool m_boolTest = false;
-	float m_sliderValue = 0.5f;
-	float m_count = 0.0f;
+	// Red interactions
+	float m_rxg = 0.0f; // red on green
+	float m_rxr = 0.0f; // red on red
+	float m_rxb = 0.0f; // red on blue
+	float m_rxy = 0.0f; // red on yellow
+	float m_rxp = 0.0f; // red on purple
+	float m_rrxg = 1.0f; // radius red on green
+	float m_rrxr = 1.0f; // radius red on red
+	float m_rrxb = 1.0f; // radius red on blue
+	float m_rrxy = 1.0f; // radius red on yellow
+	float m_rrxp = 1.0f; // radius red on purple
+
+	// Blue interactions
+	float m_bxg = 0.0f; // blue on green
+	float m_bxr = 0.0f; // blue on red
+	float m_bxb = 0.0f; // blue on blue
+	float m_bxy = 0.0f; // blue on yellow
+	float m_bxp = 0.0f; // blue on purple
+	float m_rbxg = 1.0f; // radius blue on green
+	float m_rbxr = 1.0f; // radius blue on red
+	float m_rbxb = 1.0f; // radius blue on blue
+	float m_rbxy = 1.0f; // radius blue on yellow
+	float m_rbxp = 1.0f; // radius blue on purple
+
+	// Yellow interactions
+	float m_yxg = 0.0f; // yellow on green
+	float m_yxr = 0.0f; // yellow on red
+	float m_yxb = 0.0f; // yellow on blue
+	float m_yxy = 0.0f; // yellow on yellow
+	float m_yxp = 0.0f; // yellow on purple
+	float m_ryxg = 1.0f; // radius yellow on green
+	float m_ryxr = 1.0f; // radius yellow on red
+	float m_ryxb = 1.0f; // radius yellow on blue
+	float m_ryxy = 1.0f; // radius yellow on yellow
+	float m_ryxp = 1.0f; // radius yellow on purple
+
+	// Purple interactions
+	float m_pxg = 0.0f; // purple on green
+	float m_pxr = 0.0f; // purple on red
+	float m_pxb = 0.0f; // purple on blue
+	float m_pxy = 0.0f; // purple on yellow
+	float m_pxp = 0.0f; // purple on purple
+	float m_rpxg = 1.0f; // radius purple on green
+	float m_rpxr = 1.0f; // radius purple on red
+	float m_rpxb = 1.0f; // radius purple on blue
+	float m_rpxy = 1.0f; // radius purple on yellow
+	float m_rpxp = 1.0f; // radius purple on purple
+
+	// Functions
+	void generateRandomScene();
 };
