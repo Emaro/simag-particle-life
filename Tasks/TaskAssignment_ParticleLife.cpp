@@ -32,7 +32,7 @@ namespace
 
 void TaskAssignment_ParticleLife::setForces()
 {
-    fillInteractionTables(); //update tables
+    //fillInteractionTables(); //update tables
 
     auto& ps = particleSystem(m_workOnPsIdx);
     int s = (int)ps.size();
@@ -49,29 +49,53 @@ void TaskAssignment_ParticleLife::setForces()
         glm::vec3 &v0 = vel[i];
         int type0 = getType(colors[i]);
 
-        for (int j = 0; j < s; j++) 
+        for (int j = i + 1; j < s; j++) 
         {
-            if (i == j) continue;
-
             int type1 = getType(colors[j]);
-            float radius = m_radiusTable[type0][type1];
+            float radius01 = m_radiusTable[type0][type1];
+            float radius10 = m_radiusTable[type1][type1];
 
-            glm::vec3 p1 = pos[j];
-            glm::vec3 diff = p1 - p0;
-            
-            // check if particle is in radius, if not skip
-            float distSq = glm::dot(diff, diff);
-
-            // small epsilon check, to ensure no div by 0 happens (particles exactly on eachother)
-            // (which would just erase everything lol)
-            if (distSq > radius * radius || distSq < 1e-6f) continue;
-
-            float dist = std::sqrt(distSq);
+            glm::vec3 diff = pos[j] - p0;
+            float dist = glm::length(diff);
             glm::vec3 dir = diff / dist;
 
-            float f_coef = m_forceTable[type0][type1] * -1; // <0 = Attract, >0 = repel 
-            float f_strength = f_coef * (1.0f - (dist / radius));
-            forces[i] += dir * f_strength;
+            if (dist < m_repelDist)
+            {
+                glm::vec3 repelForce = dir * m_repelForce * (1.0f - (dist / m_repelDist));
+                forces[i] -= repelForce;
+                forces[j] += repelForce;
+            }
+            else
+            {
+                float halfRepel = m_repelDist / 2;
+                float halfR01 = radius01 / 2;
+                float halfR10 = radius10 / 2;
+
+                if (dist < halfR01 + halfRepel)
+                {
+                    float f_coef = m_forceTable[type0][type1];
+                    float f_strength = f_coef * (dist - m_repelDist) / (halfR01 + halfRepel);
+                    forces[i] += dir * f_strength;
+                }
+                else if (dist < radius01)
+                {
+                    float f_coef = m_forceTable[type0][type1];
+                    float f_strength = f_coef * (dist - halfR01 - halfRepel) / (halfR01 - halfRepel);
+                    forces[i] += dir * f_strength;
+                }
+
+                if (dist < halfR10 + halfRepel)
+                {
+                    float f_coef = m_forceTable[type1][type0];
+                    float f_strength = f_coef * (dist - m_repelDist) / (halfR10 + halfRepel);
+                    forces[j] -= dir * f_strength;
+                }
+                else if (dist < radius10) {
+                    float f_coef = m_forceTable[type1][type0];
+                    float f_strength = f_coef * (dist - halfR10 - halfRepel) / (halfR10 - halfRepel);
+                    forces[j] -= dir * f_strength;
+                }
+            }
         }
 
         // Bounding
@@ -214,7 +238,7 @@ void TaskAssignment_ParticleLife::imGui()
     ImGui::SliderInt(paramName("Work on PS Idx"), &m_workOnPsIdx, 0, noOfPs() - 1);
     ImGui::Separator();
 
-    ImGui::SliderInt(paramName("Number of particles"), &m_noParticles, 0, 10000);
+    ImGui::SliderInt(paramName("Number of particles"), &m_noParticles, 0, 5000);
     ImGui::SliderFloat("Viscosity", &m_viscosity, 0.0f, 1.0f);
     ImGui::Checkbox(paramName("Bounded?"), &m_bounded);
     float w_min = -20;
@@ -229,6 +253,13 @@ void TaskAssignment_ParticleLife::imGui()
     ImGui::Separator();
 
     if (ImGui::Button(paramName("Generate Scene"))) { generateRandomScene(); }
+
+    if (ImGui::Button(paramName("Update force matrix"))) {
+        fillInteractionTables();
+    }
+
+    ImGui::SliderFloat("Repel Distance", &m_repelDist, 0.0f, 10.0f);
+    ImGui::SliderFloat("Repel Force", &m_repelForce, 0.0f, 10.0f);
 
     float f_min = -1.0f;
     float f_max = 1.0f;
