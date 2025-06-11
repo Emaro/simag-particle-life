@@ -32,7 +32,7 @@ namespace
 
 void TaskAssignment_ParticleLife::setForces()
 {
-    //fillInteractionTables(); //update tables
+    fillInteractionTables(); //update tables
 
     auto& ps = particleSystem(m_workOnPsIdx);
     int s = (int)ps.size();
@@ -103,23 +103,19 @@ void TaskAssignment_ParticleLife::setForces()
         {
             float e = 0.01f; // small epsilon
             if (p0.x > m_w_xmax) {
-                p0.x = m_w_xmax - e;
-                v0.x *= -1;
+                p0.x = m_w_xmin + e;
             }
 
             if (p0.x < m_w_xmin) {
-                p0.x = m_w_xmin + e;
-                v0.x *= -1;
+                p0.x = m_w_xmax - e;
             }
 
             if (p0.y > m_w_ymax) {
-                p0.y = m_w_ymax - e;
-                v0.y *= -1;
+                p0.y = m_w_ymin + e;
             }
 
             if (p0.y < m_w_ymin) {
-                p0.y = m_w_ymin + e;
-                v0.y *= -1;
+                p0.y = m_w_ymax - e;
             }
         }
 
